@@ -1,0 +1,6 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: shuting-test-mutation
+  labels:
+    statnett.no/project-name: shuting-test

@@ -1,0 +1,35 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+ name: add-allowed-networkpolicy
+spec:
+ rules:
+ - match:
+    any:
+    - resources:
+        kinds:
+        - Namespace
+   name: create-allowed-networkpolicies
+   generate:
+    synchronize: true
+    foreach:
+    - list: request.object.metadata.annotations."allowed_namespaces" | split(@, ',')
+      apiVersion: networking.k8s.io/v1
+      kind: NetworkPolicy
+      name: allow-all-between-{{request.object.metadata.name}}-{{element}}
+      namespace: "{{ element }}"
+      data:
+        spec:
+          policyTypes:
+          - Ingress
+          - Egress
+          ingress:
+          - from:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: "{{ element }}"
+          egress:
+          - to:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: "{{ element }}"

@@ -1,0 +1,20 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-owner-label
+spec:
+  ## generate a warning for admission mutations
+  emitWarning: true
+  background: false
+  rules:
+    - name: apply-accurate-template
+      match:
+        all:
+          - resources:
+              kinds:
+                - Namespace
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              kyverno.io/owner: "{{request.userInfo.username}}"
