@@ -27,9 +27,9 @@ spec:
           - from:
             - namespaceSelector:
                 matchLabels:
-                  kubernetes.io/metadata.name: "{{ element }}"
+                  kubernetes.io/metadata.name: "{{ request.object.metadata.name }}"
           egress:
           - to:
             - namespaceSelector:
                 matchLabels:
-                  kubernetes.io/metadata.name: "{{ element }}"
+                  kubernetes.io/metadata.name: "{{ request.object.metadata.name }}"
